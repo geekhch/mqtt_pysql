@@ -4,7 +4,7 @@
 2. MQTT API: https://pypi.python.org/pypi/paho-mqtt
 3. topic报文格式使用python一级字典（单层json）格式，报文中需要加入单片机唯一id编号，例如｛"id":"123","tempreture":"48","humility":"89"｝
 4. 数据表名称为（b_001）,001代表单片机id前缀
-INSERT INTO b_001(fk_id,temp,hum,lum,battery) value(0010002,32,43,23,54)
+mosquitto_pub -h tx.3cat.top -t "SCU/TEST" -m "{'fk_id':'0020001','fire':'0','battery':'100'}"
 '''
 import paho.mqtt.client as mqtt
 from sqlSet import Mysql
@@ -39,12 +39,12 @@ def on_message(client, userdata, msg):
     '''收到消息就执行下面的操作'''
     jsonStr = str(msg.payload)
     dictType = eval(jsonStr)
-    # print(Time()+str(dictType)) #日志消息
-    analzeJson(dictType)
+    print(Time()+str(dictType)) #日志消息
+    if(isinstance(dictType,dict)):
+        analzeJson(dictType)
 
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
 mqtt_client.connect("tx.3cat.top", 1883, 60)
 mqtt_client.loop_forever()
-
