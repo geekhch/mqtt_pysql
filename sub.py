@@ -38,10 +38,14 @@ def analzeJson(dict_var):
 def on_message(client, userdata, msg):
     '''收到消息就执行下面的操作'''
     jsonStr = str(msg.payload)
-    dictType = eval(jsonStr)
+    try:
+        dictType = eval(jsonStr)
+        if(not isinstance(dictType, dict)):
+            raise Exception("不是json")
+    except:
+        return
     print(Time()+str(dictType)) #日志消息
-    if(isinstance(dictType,dict)):
-        analzeJson(dictType)
+    analzeJson(dictType)
 
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
