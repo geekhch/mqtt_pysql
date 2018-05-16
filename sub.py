@@ -45,7 +45,10 @@ def on_message(client, userdata, msg):
     except:
         return
     print(Time()+str(dictType)) #日志消息
-    analzeJson(dictType)
+    try:
+        analzeJson(dictType)
+    except:
+        print('解析json报文失败')
 
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
