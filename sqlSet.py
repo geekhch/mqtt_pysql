@@ -15,7 +15,7 @@ class Mysql:
     def update(self, sql):
         try:
             m_cursor = self.m_conn.cursor()
-            print(self.Time()+sql)
+            # print(self.Time()+sql)
             m_cursor.execute(sql)
             self.m_conn.commit()
             m_cursor.close()
