@@ -33,6 +33,7 @@ def analzeJson(dict_var):
         columns += key + ','
         values += dict_var[key] + ','
     sql = "INSERT INTO {0}({1}) VALUES({2})".format(table,columns[:-1],values[:-1])
+    sql.replace('fk_id','type')
     sql_cllient.update(sql)
         
 def on_message(client, userdata, msg):

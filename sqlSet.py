@@ -4,9 +4,9 @@ import time
 
 class Mysql:
     m_conn = pymysql.connect(
-        host='127.0.0.1', port=3306,
+        host='tx.3cat.top', port=3306,
         user='root', password='123',
-        db='lora_new', charset='utf8',
+        db='lora', charset='utf8',
         cursorclass=pymysql.cursors.DictCursor)
 
     def getConn(self):
