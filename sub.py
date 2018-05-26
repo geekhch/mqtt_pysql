@@ -20,21 +20,24 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("SCU/#")
 
 def analzeJson(dict_var):
-    if(not dict_var.has_key('fk_id')):
-        return -1
-    dict_var['fk_id'] = "\'%s\'" % dict_var['fk_id']
-    sql_cllient = Mysql()
-    sql = "select tableName from boxes where id={0}".format(dict_var['fk_id'])
-    results = sql_cllient.querry(sql)
-    table = results[0]['tableName']
-    columns=''
-    values=''
-    for key in dict_var:
-        columns += key + ','
-        values += dict_var[key] + ','
-    sql = "INSERT INTO {0}({1}) VALUES({2})".format(table,columns[:-1],values[:-1])
-    sql.replace('fk_id','type')
-    sql_cllient.update(sql)
+    try:
+        if(not dict_var.has_key('fk_id')):
+            return -1
+        dict_var['fk_id'] = "\'%s\'" % dict_var['fk_id']
+        sql_cllient = Mysql()
+        sql = "select tableName from boxes where id={0}".format(dict_var['fk_id'])
+        results = sql_cllient.querry(sql)
+        table = results[0]['tableName']
+        columns=''
+        values=''
+        for key in dict_var:
+            columns += key + ','
+            values += dict_var[key] + ','
+        sql = "INSERT INTO {0}({1}) VALUES({2})".format(table,columns[:-1],values[:-1])
+        sql.replace('fk_id','type')
+        sql_cllient.update(sql)
+    except:
+        print("数据插入数据库失败")
         
 def on_message(client, userdata, msg):
     '''收到消息就执行下面的操作'''
