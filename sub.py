@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 '''
 1. 使用前pip install pymysql、　pip install paho-mqtt
 2. MQTT API: https://pypi.python.org/pypi/paho-mqtt
@@ -20,39 +20,39 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("SCU/#")
 
 def analzeJson(dict_var):
-    try:
-        if(not dict_var.has_key('fk_id')):
-            return -1
-        dict_var['fk_id'] = "\'%s\'" % dict_var['fk_id']
-        sql_cllient = Mysql()
-        sql = "select tableName from boxes where id={0}".format(dict_var['fk_id'])
-        results = sql_cllient.querry(sql)
-        table = results[0]['tableName']
-        columns=''
-        values=''
-        for key in dict_var:
-            columns += key + ','
-            values += dict_var[key] + ','
-        sql = "INSERT INTO {0}({1}) VALUES({2})".format(table,columns[:-1],values[:-1])
-        sql.replace('fk_id','type')
-        sql_cllient.update(sql)
-    except:
-        print("数据插入数据库失败")
-        
+    if(not 'fk_id' in dict_var.keys()):
+        return -1
+    dict_var['fk_id'] = "\'%s\'" % dict_var['fk_id']
+    sql_cllient = Mysql()
+    sql = "select tableName from boxes where id={0}".format(dict_var['fk_id'])
+    sql = sql.replace('fk_id','type')
+    results = sql_cllient.querry(sql)
+    table = results[0]['tableName']
+    columns=''
+    values=''
+    for key in dict_var:
+        columns += key + ','
+        values += dict_var[key] + ','
+    sql = "INSERT INTO {0}({1}) VALUES({2})".format(table,columns[:-1],values[:-1])
+    sql = sql.replace('fk_id','type')
+    sql_cllient.update(sql)
+    
 def on_message(client, userdata, msg):
     '''收到消息就执行下面的操作'''
-    jsonStr = str(msg.payload)
+    jsonStr = msg.payload.decode()
+    print("msg:",jsonStr,type(jsonStr))
     try:
         dictType = eval(jsonStr)
+        print("dict:",dictType,type(dictType))
         if(not isinstance(dictType, dict)):
             raise Exception("不是json")
     except:
         return
     print(Time()+str(dictType)) #日志消息
-    try:
-        analzeJson(dictType)
-    except:
-        print('解析json报文失败')
+    # try:
+    analzeJson(dictType)
+    # except:
+        # print('解析json报文失败')
 
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
